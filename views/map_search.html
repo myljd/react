@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html style="height:100%;">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, minimal-ui" />
+
+    <link rel="stylesheet" type="text/css" href="/../css/map/map_mine.css">
+    
+    <!-- <link rel="stylesheet" type="text/css" href="/../css/map.css"> -->
+    <title>搜索</title>
+</head>
+<style type="text/css" rel="stylesheet">
+
+
+</style>
+
+<body>
+    <!-- <input type="text" id="keyword" name="keyword" value="" onkeydown='keydown(event)' /> -->
+    <div class="search_header">
+        <div class="search_left">
+            <input id="keyword" name="keyword" placeholder="搜索商家、片区、项目" class="search_input" onkeydown='keydown(event)'>
+            <a href="#" class="search_delete" onclick="clearInput()" style="display:none"></a>
+        </div>
+        <div class="map_btn search_btn" onclick="goDetail()">搜索</div>
+    </div>
+    <div id="result1" name="result1" style="display:none" class="navi-history">
+        <!-- <div class="input_line"></div>
+        <ul class="history_item shadow" data-type="0" data-addr-type="saddr">
+            <li class="J_search_suggestion_item text-overflow" data-lng="116.338871" data-lat="39.906821" data-poilon="" data-poilat=""><span class="poi-name"><strong>W</strong>.C</span><span class="search_history_item_district">复兴门外大街甲22-3附近</span></li>
+            
+        </ul> -->
+    </div>
+ 
+    <div id="search_list">
+        <div id="search_keyword" style="padding-bottom:6px">
+        </div>
+        <div id="search_record" class="common_light search_history navi-search-history" style="background-color:#fff;margin-top:10px;">
+        </div>
+    </div>
+
+</body>
+<script language="javascript" src="http://webapi.amap.com/maps?v=1.3&key=6361c5941dd85706221ec5c515858cab"></script>
+<script src="/../js/jquery.min.js"></script>
+<script type="text/javascript">
+$(function() {
+    //获取搜索历史
+    getSearchRecord();
+    // //获取搜索关键字
+    getSearchKeyword();
+});
+
+function clearInput() {
+    $("#keyword").val("");
+    $("#result1").hide();
+    $(".search_delete").css("display", "none");
+}
+
+function getSearchRecord() {
+    var recordHtml = "";
+    $.ajax({
+        type: 'get',
+        url: '/map/getSearchRecord',
+        success: function(result) {
+            if (result.success) {
+                $("#search_record").empty();
+                if (result.data != null && result.data.length != 0) {
+                    for (var i = 0; i < result.data.length; i++) {
+                        recordHtml += "<div class='navi-history-item'><a class='history-item' onclick=searchByRecord('" +
+                            result.data[i].text + "'," + result.data[i].city_code + ")>" +
+                            result.data[i].text + "</a></div>";
+                    };
+                    recordHtml += "<div class='navi-history-item_clear'><a class='clearhistory' onclick='deleteSearchRecord()'>删除全部历史记录</a></div>";
+                    $("#search_record").html(recordHtml);
+                    console.log(result.data);
+                }
+
+            };
+        }
+    })
+}
+
+function getSearchKeyword() {
+    $("#search_keyword").empty();
+    $.ajax({
+        type: 'get',
+        url: '/map/getSearchKeyword',
+        success: function(result) {
+            if (result.success) {
+                for (var i = 0; i < result.data.length; i++) {
+                    $("#search_keyword").append("<button class='sk_button map_font' onclick=searchByRecord('" +
+                        result.data[i].name + "',320411)>" + result.data[i].name + "</button>");
+                };
+                console.log(result.data);
+            };
+        }
+    })
+}
+
+function searchByRecord(searchText, searchCityCode) {
+    localStorage.text = searchText;
+    localStorage.cityCode = searchCityCode;
+    saveSearchRecord();
+    window.location.href = "/map_index";
+}
+
+function saveSearchRecord() {
+    $.ajax({
+        type: 'post',
+        url: '/map/saveSearchRecord',
+        data: {
+            text: localStorage.text,
+            cityCode: localStorage.cityCode
+        },
+        async: false,
+        success: function(result) {
+            if (result.success) {
+                console.log(result.data);
+            };
+        }
+    })
+}
+
+function deleteSearchRecord() {
+    $.ajax({
+        type: 'post',
+        url: '/map/deleteSearchRecord',
+        success: function(result) {
+            getSearchRecord();
+        }
+    })
+}
+
+document.getElementById("keyword").onkeyup = keydown;
+//输入提示
+function autoSearch() {
+    $(".search_delete").css("display", "block");
+    var keywords = document.getElementById("keyword").value;
+    var auto;
+    //加载输入提示插件
+    AMap.service(["AMap.Autocomplete"], function() {
+        var autoOptions = {
+            city: "" //城市，默认全国
+        };
+        auto = new AMap.Autocomplete(autoOptions);
+        //查询成功时返回查询结果
+        if (keywords.length > 0) {
+            auto.search(keywords, function(status, result) {
+                autocomplete_CallBack(result);
+            });
+        } else {
+            document.getElementById("result1").style.display = "none";
+        }
+    });
+}
+
+//输出输入提示结果的回调函数
+function autocomplete_CallBack(data) {
+    var resultStr = "<div class='input_line'></div> ";
+    var tipArr = data.tips;
+
+    resultStr += "<ul class='history_item shadow' data-type='0' data-addr-type='saddr'>";
+    if (tipArr && tipArr.length > 0) {
+        
+        for (var i = 0; i < tipArr.length && i < 6; i++) {
+            resultStr += "<li id='divid" + (i + 1) + "' onmouseover='openMarkerTipById(" + (i + 1) + ",this)' onclick='selectResult(" +
+             i + ")' onmouseout='onmouseout_MarkerStyle(" + (i + 1) + 
+             ",this)' class='J_search_suggestion_item text-overflow' " + 
+            "data=" + tipArr[i].adcode + "><span class='poi-name'>" + tipArr[i].name + "</span><span class='search_history_item_district'>" + tipArr[i].district + "</span></li>";
+        }
+        
+    } else {
+        resultStr += "<li  class='J_search_suggestion_item text-overflow' ><span class='poi-name'>未找到结果,请尝试不同的关键字</span></li>";
+    }
+    resultStr += "</ul>";
+
+    document.getElementById("result1").curSelect = -1;
+    document.getElementById("result1").tipArr = tipArr;
+    document.getElementById("result1").innerHTML = resultStr;
+    document.getElementById("result1").style.display = "block";
+
+    
+}
+
+//输入提示框鼠标滑过时的样式
+function openMarkerTipById(pointid, thiss) { //根据id打开搜索结果点tip 
+    thiss.style.background = '#CAE1FF';
+}
+
+//输入提示框鼠标移出时的样式
+function onmouseout_MarkerStyle(pointid, thiss) { //鼠标移开后点样式恢复 
+    thiss.style.background = "";
+}
+
+//从输入提示框中选择关键字并查询
+function selectResult(index) {
+    if (index < 0) {
+        return;
+    }
+
+    if (navigator.userAgent.indexOf("MSIE") > 0) {
+        document.getElementById("keyword").onpropertychange = null;
+        document.getElementById("keyword").onfocus = focus_callback;
+    }
+    //截取输入提示的关键字部分
+    var text = document.getElementById("divid" + (index + 1)).innerHTML.replace(/<[^>].*?>.*<\/[^>].*?>/g, "");
+    var cityCode = document.getElementById("divid" + (index + 1)).getAttribute('data');
+    document.getElementById("keyword").value = text;
+    document.getElementById("result1").style.display = "none";
+
+    if (text==null || text=="") {
+        alert("请输入关键字");
+        return;
+    };
+    localStorage.text = text;
+    localStorage.cityCode = cityCode;
+    //保存记录
+    saveSearchRecord();
+    window.location.href = "/map_index";
+}
+
+
+//定位选择输入提示关键字
+function focus_callback() {
+    if (navigator.userAgent.indexOf("MSIE") > 0) {
+        document.getElementById("keyword").onpropertychange = autoSearch;
+    }
+}
+
+function keydown(event) {
+    var key = (event || window.event).keyCode;
+    var result = document.getElementById("result1")
+    var cur = result.curSelect;
+    if (key === 40) { //down
+        if (cur + 1 < result.childNodes.length) {
+            if (result.childNodes[cur]) {
+                result.childNodes[cur].style.background = '';
+            }
+            result.curSelect = cur + 1;
+            result.childNodes[cur + 1].style.background = '#CAE1FF';
+            document.getElementById("keyword").value = result.tipArr[cur + 1].name;
+        }
+    } else if (key === 38) { //up
+        if (cur - 1 >= 0) {
+            if (result.childNodes[cur]) {
+                result.childNodes[cur].style.background = '';
+            }
+            result.curSelect = cur - 1;
+            result.childNodes[cur - 1].style.background = '#CAE1FF';
+            document.getElementById("keyword").value = result.tipArr[cur - 1].name;
+        }
+    } else if (key === 13) {
+        var res = document.getElementById("result1");
+        if (res && res['curSelect'] !== -1) {
+            selectResult(document.getElementById("result1").curSelect);
+        }
+    } else {
+        autoSearch();
+    }
+}
+</script>
+
+</html>

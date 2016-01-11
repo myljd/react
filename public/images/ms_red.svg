@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="20 20 80 80" enable-background="new 20 20 80 80" xml:space="preserve">
+<g>
+	<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="60" y1="36.8463" x2="60" y2="86.3361">
+		<stop  offset="0" style="stop-color:#FF3F4F"/>
+		<stop  offset="0.1806" style="stop-color:#F53849"/>
+		<stop  offset="0.4901" style="stop-color:#D9233A"/>
+		<stop  offset="0.8888" style="stop-color:#AD0322"/>
+		<stop  offset="0.9232" style="stop-color:#A90020"/>
+	</linearGradient>
+	<path fill="url(#SVGID_1_)" d="M47.1,70.5l12.1,12.9c0.4,0.4,1.1,0.4,1.6,0l12.1-12.8c4-3.8,6.6-8.8,6.6-14.6
+		c0-10.9-8.7-19.7-19.5-19.7c-10.8,0-19.5,8.7-19.5,19.6c0,5.9,2.6,10.9,6.7,14.7L47.1,70.5L47.1,70.5z"/>
+	<ellipse fill="#FFFFFF" cx="60" cy="55" rx="14.5" ry="14.7"/>
+</g>
+<rect x="20" y="20" fill="none" width="80" height="80"/>
+<ellipse fill="#FFFFFF" cx="60" cy="55" rx="14.5" ry="14.7"/>
+<g>
+	<path fill="#F7931E" d="M64.5,53.5c0.7,0,1.4-0.3,2-0.8l3.1-3.1c0.2-0.2,0.2-0.5,0-0.8c-0.2-0.2-0.5-0.2-0.8,0l-3.1,3.1
+		c-0.3,0.3-0.7,0.5-1.2,0.5s-0.9-0.2-1.2-0.5c-0.6-0.7-0.6-1.7,0-2.4l3.1-3.1c0.2-0.2,0.2-0.5,0-0.8c-0.2-0.2-0.5-0.2-0.8,0
+		l-3.1,3.1c-1.1,1.1-1.1,2.9,0,4C63.1,53.2,63.8,53.5,64.5,53.5L64.5,53.5L64.5,53.5z M64.2,51.1c0.2,0.2,0.5,0.2,0.8,0L68,48
+		c0.2-0.2,0.2-0.5,0-0.8c-0.2-0.2-0.5-0.2-0.8,0l-3.1,3.1C63.9,50.5,63.9,50.9,64.2,51.1L64.2,51.1L64.2,51.1z M52.8,60.7
+		c-0.5,0.5-0.5,1.2,0,1.7c0.5,0.5,1.2,0.5,1.7,0l5.1-5.1l-1.7-1.7L52.8,60.7L52.8,60.7L52.8,60.7z M69.5,60.7l-14.9-15
+		c-0.5-0.5-1.2-0.5-1.7,0c-0.2,0.2-0.4,0.6-0.3,0.9l0,0v1.8c0,0.3,0.1,0.7,0.4,1l7.5,7.5c0.5,0.5,1.4,0.5,1.9,0l0,0l5.5,5.5
+		c0.5,0.5,1.2,0.5,1.7,0C70,62,70,61.2,69.5,60.7L69.5,60.7L69.5,60.7z"/>
+</g>
+</svg>

@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html style="height:100%;">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, minimal-ui" />
+    <!-- <link rel="stylesheet" type="text/css" href="/../css/HowUI.css">
+    <link rel="stylesheet" type="text/css" href="/../css/style.css"> -->
+    <link rel="stylesheet" type="text/css" href="/../css/map/map_mine.css">
+    <!-- <link rel="stylesheet" type="text/css" href="http://js.webapi.amap.com/theme/v1.3/style1.3.8.css"> -->
+    <script src="/../js/jquery.min.js"></script>
+    <title>路线详情</title>
+</head>
+<style type="text/css" rel="stylesheet">
+/*html, body, div, span, form, iframe, h1, h2, h3, h4, h5, p, em, img, ol, ul, li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+*/
+
+</style>
+
+<body>
+    <div class="common_content common_dark" style="display: block; transform-origin: 0px 0px 0px; opacity: 1; transform: scale(1, 1);">
+        <div class="common_light navigation_carmap_footer" id="detail_header" >
+            <!-- <div class="new_blueButton floatr " data-segindex="0">指路</div> -->
+            <div class="navigation_carmap_footer_content" >
+                <h3 class="navigation_carmap_footer_time text-overflow time_dis" style="float: none;"> </h3> 
+            </div>
+        </div>
+        <div class="common_card common_light" style="padding-left:0;padding-bottom:0;padding-top:0">
+            <div id="detail_main" class="walkdetail_back walkdetail">
+            </div>
+        </div>
+        
+    </div>
+   
+</body>
+<script language="javascript" src="http://webapi.amap.com/maps?v=1.3&key=6361c5941dd85706221ec5c515858cab"></script>
+<script src="/../js/map/nav_result_detail.js"></script>
+<script type="text/javascript">
+driving_detail();
+function showBusRoute(){
+    window.location.href = "/map_nav_bus_result";
+}
+
+</script>
+
+</html>

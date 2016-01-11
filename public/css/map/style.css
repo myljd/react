@@ -1,0 +1,64 @@
+.qq-exmple .tab-current,.qq-exmple .tab-current a:before{
+    color: #25b6ed;
+}
+.qq-exmple .bg-blue{
+    background-color: #25b6ed;
+}
+.qq-exmple .size-large{
+    height: 85px;
+}
+.back-cover .icon-5:before {
+    content: "\E0CE";
+    padding-left: 5px;
+}
+.qq-exmple .list-item .top-badge-text{
+    font-size: 12px;
+}
+.qq-exmple .list-item:before{
+    left: 30px;
+}
+.qq-exmple .qq-list .list-item:before{
+    left: 0px;
+}
+.qq-exmple .qq-list .list-item{
+    height: 40px;
+    line-height: 40px;
+}
+.qq-exmple .qq-list .list-item .badge-text{
+    font-size: 12px;
+}
+.qq-search{
+    padding: 10px;
+    margin-bottom: 0px;
+    height: 45px;
+}
+.qq-search .grid-item{
+    font-size: 13px;
+    color: #aaa;
+    line-height: 26px;
+}
+.qq-qzone .list-item{
+    padding-left: 15px;
+}
+.qq-exmple .qq-qzone .list-item:before{
+    left: 15px;
+}
+.qq-chat{
+    background: #eee;
+}
+.qq-chat .grid{
+    padding: 10px;
+    margin-bottom: 0px;
+    height: 45px;
+
+}
+.qq-chat .grid .grid-item{
+    font-size: 13px;
+    color: #aaa;
+    line-height: 26px;
+    background: white;
+    border-radius: 3px;
+    text-align: left;
+    padding-left: 10px;
+    width: 70%;
+}

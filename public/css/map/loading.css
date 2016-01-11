@@ -1,0 +1,110 @@
+#darkenBg {
+    background-color: rgba(0, 0, 0, .6);
+    width: 100%;
+    min-height: 100px;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    z-index: 1000
+}
+
+.download-ios,
+.download-android {
+    margin: 0 8px;
+    height: 100%;
+    background: url(i/tips.png) 0 0 no-repeat;
+    background-size: 100% auto
+}
+
+.download-android {
+    background-image: url(i/tips_android.png)
+}
+
+.pre-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -85px;
+    margin-top: -20px;
+    height: 32px;
+    background: url("/img/loading.gif?v=180673e9") 0 0 no-repeat;
+    line-height: 32px;
+    padding-left: 35px
+}
+
+.full-loading-mask,
+.alert-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 100
+}
+
+.full-loading,
+.alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -82px;
+    margin-top: -20px;
+    width: 118px;
+    padding-left: 50px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, .5)url("/img/loading.gif?v=180673e9") 19px center no-repeat;
+    background-size: 15px;
+    color: #FFF;
+    font-size: 13px;
+    line-height: 70px;
+    border-radius: 2px
+}
+
+.full-loading-locate {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -110px;
+    margin-top: -20px;
+    width: 188px;
+    padding-left: 50px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, .5)url("/img/loading.gif?v=180673e9") 19px center no-repeat;
+    background-size: 15px;
+    color: #FFF;
+    font-size: 13px;
+    line-height: 70px;
+    border-radius: 2px
+}
+
+.alert {
+    width: 168px;
+    padding: 35px 0;
+    background-image: none;
+    line-height: 1.2em;
+    text-align: center
+}
+
+.alert_loc {
+    position: fixed;
+    top: 70%;
+    left: 50%;
+    width: 160px;
+    padding-left: 50px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, .5)url("/img/loading.gif?v=180673e9") 19px center no-repeat;
+    background-size: 15px;
+    color: #FFF;
+    font-size: 13px;
+    line-height: 70px;
+    border-radius: 2px;
+    margin-left: -79px
+}
+
+.alert_loc {
+    padding: 8px 0;
+    background-image: none;
+    line-height: 1.2em;
+    text-align: center
+}

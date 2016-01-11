@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html style="height:100%;">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, minimal-ui" />
+    <!-- <link rel="stylesheet" type="text/css" href="/../css/HowUI.css">
+    <link rel="stylesheet" type="text/css" href="/../css/style.css"> -->
+    <link rel="stylesheet" type="text/css" href="/../css/map/map_mine.css">
+    
+    <title>我的足迹</title>
+</head>
+
+<body style="margin:0">
+    <div id="his_div" style="display:none;">
+        <!-- <div class="his_1">
+            <div class="foot_his_time_pic foot_1">
+            </div>
+            <div class="foot_his_time foot_2">
+                2014.09.10 周四
+            </div>
+            <div class="foot_3">
+            </div>
+        </div>
+        <div class="his_2" onclick="showMap()">
+            <div class="foot_his_pic foot_1">
+            </div>
+            <div class="foot_his_pro_name foot_2">
+                <div class="foot_his_name">
+                    穿越侏罗纪
+                </div>
+                <div class="foot_his_pro_time">
+                    09:03
+                </div>
+            </div>
+            <div class="foot_his_go_pic foot_3">
+            </div>
+        </div> -->
+    </div>
+    <div id="map_div">
+        <div id="map"></div>
+        <div class="message_box map_icon_shadow" style="bottom:10px;height:40px">
+            <div class="foot_left" >
+                <div class="foot_left_in">
+                <a id="foot_count"><img  class="pic_size" src="../../images/foot_mine.svg" >0景点 &nbsp; 0片区</a>
+                </div>
+            </div>
+            <div onclick="showHistoryList()" class="foot_right" style="text-align:right">
+                <div class="foot_right_in">
+                <a style="color:#0093fe;"><img  class="pic_size" src="../../images/foot.svg" >历史足迹</a>
+                <div>
+            </div>
+        </div>
+    </div>
+</body>
+<script language="javascript" src="http://webapi.amap.com/maps?v=1.3&key=6361c5941dd85706221ec5c515858cab"></script>
+<script src="/../js/jquery.min.js"></script>
+<script type="text/javascript" src="/../js/map/map_base.js"></script>
+<script type="text/javascript" src="/../js/map/store_gaode.js"></script>
+<script type="text/javascript" src="/../js/map/map_footer.js"></script>
+<script type="text/javascript">
+scale.hide();
+upFooterToServer();
+getFooterById();
+
+function completeOnHtml(){
+
+}
+
+var listArray = new Array();
+
+function getFooterById() {
+    $.ajax({
+        type: 'get',
+        url: '/map/getFooterById',
+        data: {
+            id: 1
+        },
+        success: function(result) {
+            if (result.success && result.data.length != 0) {
+                sortFooterData(result.data);
+                drawFooter(0);
+                listAllFooterByDay();
+            };
+        }
+    })
+}
+
+function listAllFooterByDay(){
+
+    var resultHtml = "";
+    for (var i = 0; i < listArray.length; i++) {
+
+        var dataF = new Date(parseInt(listArray[i][0].update_time));
+        var dataA = getDataA(dataF);
+        var dataB = getDataB(dataF);
+        // alert(data);
+        resultHtml += "<div class='his_1'><div class='foot_his_time_pic foot_1'></div><div class='foot_his_time foot_2'>"+dataA+"</div><div class='foot_3'></div></div><div class='his_2' onclick='showMap("+i+")'><div class='foot_his_pic foot_1'></div><div class='foot_his_pro_name foot_2'><div class='foot_his_name'>"+listArray[i][0].project_name+"</div><div class='foot_his_pro_time'>"+dataB+"</div></div><div class='foot_his_go_pic foot_3'></div></div>";
+    };
+    $("#his_div").empty();
+    $("#his_div").html(resultHtml);
+    
+}
+
+function getDataA(date){
+    var dataA = date.getFullYear();
+    if ((date.getMonth()+1)<10) {
+        dataA+= ".0"+(date.getMonth()+1);
+    }else{
+        dataA+= "."+(date.getMonth()+1);
+    }
+    if (date.getDate()<10) {
+        dataA+= ".0"+date.getDate();
+    }else{
+        dataA+= "."+date.getDate();
+    }
+    dataA+=" "+getWeekName(date.getDay());
+    return dataA;
+}
+
+
+function getDataB(date){
+    var dataB = "";
+    if (date.getHours()<10) {
+        dataB+= "0"+date.getHours();
+    }else{
+        dataB+= date.getHours();
+    }
+    if (date.getSeconds()<10) {
+        dataB+= ":0"+date.getSeconds();
+    }else{
+        dataB+= ":"+date.getSeconds();
+    }
+    return dataB;
+}
+
+function getWeekName(day){
+    if (day==1) {
+        return "周一";
+    }else if (day==2) {
+        return "周二";
+    }else if (day==3) {
+        return "周三";
+    }else if (day==4) {
+        return "周四";
+    }else if (day==5) {
+        return "周五";
+    }else if (day==6) {
+        return "周六";
+    }else if (day==0) {
+        return "周日";
+    }
+}
+function filterArray(receiveArray){
+var arrResult = new Array(); //定义一个返回结果数组.
+    for (var i=0; i<receiveArray.length; ++i) { 
+        if(check(arrResult,receiveArray[i]) == -1) {
+            //在这里做i元素与所有判断相同与否
+            arrResult.push(receiveArray[i]);　
+            //　添加该元素到新数组。如果if内判断为false（即已添加过），
+            //则不添加。
+        }
+    }
+    return arrResult;
+}
+
+function check(receiveArray,checkItem){
+    var index = -1; //　函数返回值用于布尔判断
+    for(var i=0; i<receiveArray.length; ++i){
+        if(receiveArray[i]==checkItem){
+            index = i;
+            break;
+            }
+        }
+    return index;
+}
+
+function drawFooter(index) {
+    var footerData = listArray[index];
+    var areaList = new Array();
+    var nameList = new Array();
+    var lineArray = new Array();
+    for (var i = 0; i < footerData.length; i++) {
+        areaList.push(footerData[i].parent_id);
+        flag = 0;
+        if (nameList != null && nameList.length != 0) {
+            for (var j = 0; j < nameList.length; i++) {
+                if (footerData[i].project_name == nameList[j]) {
+                    flag = 1;
+                    break;
+                }
+            }
+        }
+        if (flag == 0) {
+            nameList.push(footerData[i].project_name);
+            lineArray.push(new AMap.LngLat(footerData[i].lng, footerData[i].lat));
+        }
+    }
+
+    areaList = filterArray(areaList);
+    nameList = filterArray(nameList);
+
+    $("#foot_count").html("<img  class='pic_size' src='../../images/foot_mine.svg' >" + nameList.length + "景点 &nbsp; " + areaList.length + "片区");
+
+    console.log(lineArray);
+    map.clearMap();
+    marker = new AMap.Marker({
+        map: map,
+        position: new AMap.LngLat(120.000717, 31.822704),
+        icon: "http://code.mapabc.com/images/car_03.png", //marker图标，直接传递地址url
+        offset: new AMap.Pixel(-10, -13),
+        autoRotation: true
+    });
+    //绘制轨迹
+    var polyline = new AMap.Polyline({
+        map: map,
+        path: lineArray,
+        strokeColor: "#00A", //线颜色
+        strokeOpacity: 1, //线透明度
+        strokeWeight: 3, //线宽
+        strokeStyle: "solid" //线样式
+    });
+    map.setFitView();
+    marker.moveAlong(lineArray, 300);
+
+}
+
+function sortFooterData(footData) {
+    var list = new Array();
+    var hold = footData[0];
+    list.push(hold);
+    var holdDate1 = new Date(parseInt(footData[0].update_time)).getDate();
+    for (var i = 1; i < footData.length; i++) {
+        var holdData2 = new Date(parseInt(footData[i].update_time)).getDate();
+        // footData[i].update_time = new Date(footData[i].update_time).toLocaleDateString();
+        if (holdDate1 == holdData2) {
+            list.push(footData[i]);
+        } else {
+            list.reverse();
+            listArray.push(list);
+            list = new Array();
+            holdDate1 = holdData2;
+            list.push(footData[i]);
+        }
+    };
+    listArray.push(list);
+}
+
+function showHistoryList() {
+    $("#his_div").css("display", "block");
+    $("#map_div").css("display", "none");
+}
+
+function showMap(index) {
+    $("#his_div").css("display", "none");
+    $("#map_div").css("display", "block");
+    drawFooter(index);
+    // $("#his_div").hide();
+    // $("#map_div").show();
+}
+</script>
+
+</html>

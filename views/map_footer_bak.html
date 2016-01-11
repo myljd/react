@@ -1,0 +1,102 @@
+
+                        
+<!DOCTYPE HTML>
+<html style="height:100%;">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, minimal-ui" />
+<title>我的足迹</title> 
+</head>
+<style type="text/css" rel="stylesheet">
+    header{position:absolute;height:60px;top:0;width:100%;background-color:#F4F4F4;z-index:999;text-align:center;line-height:60px;color:#666666;font-weight:bold;border-bottom:1px solid #BBBBBB;}
+    header div:nth-child(1){position:absolute;z-index:1000;width:40px;cursor:pointer;}
+    header div:nth-child(1) img{width:40px;height:40px;margin-left:3px;margin-top:10px;}
+    header div:nth-child(2){width:100%}
+    html body{height:100%;margin:0;font-family: "微软雅黑";}
+    #map{position:absolute;top:60px;width:100%;}
+    
+    .float_div{cursor:pointer;opacity:0.75;text-align:center;line-height:60px;background-color:#272822;width:50%;height:60px;position:absolute;z-index:888;bottom:0;color: #fff;}
+    #start{left:0px;}
+    #stop{right:0px;}
+</style>
+<body>
+    <header>
+        <div>
+            
+        </div>
+        <div>
+            <span>轨迹回放</span>
+        </div>
+    </header>
+    <div class="float_div" id="start">
+        开始
+    </div>
+    <div class="float_div" id="stop">
+        停止
+    </div>
+    <div id="map"></div>    
+</body>
+<script language="javascript" src="http://webapi.amap.com/maps?v=1.3&key=e8496e8ac4b0f01100b98da5bde96597"></script>
+<script type="text/javascript" src="/../js/map/map_base.js"></script>
+<script type="text/javascript" src="/../js/map/map_lng_lat.js"></script>
+<script type="text/javascript" src="/../js/map/map_footer.js"></script>
+<script type="text/javascript">
+    // (function (){
+        var mapHeight = document.body.clientHeight - 120;
+        document.getElementById('map').style.height = mapHeight + 'px';
+    //     var marker = null,
+    //         map = new AMap.Map("map",{
+    //          view: new AMap.View2D({
+    //             center:new AMap.LngLat(120.001224,31.824686),
+    //             zoom:13 
+    //          })
+    //      });
+        
+    //     AMap.event.addListener(map,"complete", function(){
+    //         marker = new AMap.Marker({
+    //             map:map,
+    //             position:new AMap.LngLat(120.000717,31.822704),
+    //             icon:"http://code.mapabc.com/images/car_03.png", //marker图标，直接传递地址url
+    //             offset:new AMap.Pixel(-26,-13), 
+    //             autoRotation:true
+    //         });
+                  
+    //         lineArr = new Array(); 
+    //         lineArr.push(new AMap.LngLat(120.000717,31.822704)); 
+    //         lineArr.push(new AMap.LngLat(120.002165,31.823192)); 
+    //         lineArr.push(new AMap.LngLat(120.002595,31.823502)); 
+    //         lineArr.push(new AMap.LngLat(120.002766,31.823848)); 
+    //         lineArr.push(new AMap.LngLat(120.002756,31.823857)); 
+    //         lineArr.push(new AMap.LngLat(120.002911,31.824591)); 
+    //         lineArr.push(new AMap.LngLat(120.002149,31.825188)); 
+    //         //绘制轨迹
+    //         var polyline = new AMap.Polyline({
+    //             map:map,
+    //             path:lineArr,
+    //             strokeColor:"#00A",//线颜色
+    //             strokeOpacity:1,//线透明度
+    //             strokeWeight:3,//线宽
+    //             strokeStyle:"solid"//线样式
+    //         });
+    //         map.setFitView();
+    //         marker.moveAlong(lineArr,500);
+    //     });
+        
+
+    //     //添加事件
+    //     document.getElementById('start').onclick = function(){
+    //         location.reload();
+    //         map.setFitView();
+    //         marker.moveAlong(lineArr,500);
+    //     };
+        
+    //     document.getElementById('stop').onclick = function(){
+    //         marker.stopMove();
+    //     };
+        
+        
+    // })();
+</script>
+</html>                     
+
+    

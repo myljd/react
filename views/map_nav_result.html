@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html style="height:100%;">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, minimal-ui" />
+    <!-- <link rel="stylesheet" type="text/css" href="/../css/HowUI.css">
+    <link rel="stylesheet" type="text/css" href="/../css/style.css"> -->
+    <link rel="stylesheet" type="text/css" href="/../css/map/map_mine.css">
+    <script src="/../js/jquery.min.js"></script>
+    <title>选择您的出行方式</title>
+</head>
+<style type="text/css" rel="stylesheet">
+
+</style>
+
+<body>
+    <div class="nav_result_header">
+        <div class="nav_header_img">
+            <div style="width:33%;float:left">
+                <a class="bus_nav" onclick="chooseNav('bus_nav')"><i></i></a>
+            </div>
+            <div style="width:33%;float:left">
+                <a class="car_nav" onclick="chooseNav('car_nav')"><i></i></a>
+            </div>
+            <div style="width:33%;float:left">
+                <a class="walk_nav" onclick="chooseNav('walk_nav')"><i></i></a>
+            </div>
+        </div>
+    </div>
+    <div id="bus_div" style="display:none;">
+    </div>
+    <div id="map_div" style="display:none;">
+        <div id="map"></div>
+        <div class="map_zoom map_icon_shadow" style="bottom:60px">
+            <a href="#" class="map_zoomin" onclick="mapIn()"></a>
+            <a href="#" class="map_zoomout" onclick="mapOut()"></a>
+        </div>
+        <div class="map_locate map_icon_shadow" style="bottom:60px">
+            <a href="#" class="location_icon" onclick="getMyPosition()"></a>
+        </div>
+        <div class="message_box map_icon_shadow" style="bottom:10px;height:40px">
+            <div class="message_left">
+                <div class="time_dis"></div>
+            </div>
+            <div class="message_right" onclick="goDetail()">
+                <div class="message_pic"></div>
+                <div class="message_desc">详情</div>
+            </div>
+        </div>
+    </div>
+</body>
+<script language="javascript" src="http://webapi.amap.com/maps?v=1.3&key=6361c5941dd85706221ec5c515858cab"></script>
+<script type="text/javascript" src="/../js/map/map_base.js"></script>
+<script type="text/javascript" src="/../js/map/store_gaode.js"></script>
+<script type="text/javascript">
+function goDetail() {
+    window.location.href = "/map_nav_result_detail";
+}
+
+/*
+ *解析定位结果
+ */
+function completeOnHtml(data) {
+    $(".location_icon").css('background-image', 'url(public/images/after_location.svg)');
+}
+chooseNav(localStorage.navWay);
+
+function chooseNav(chooseWay) {
+    localStorage.navWay = chooseWay;
+    map.clearMap();
+    $(".location_icon").css('background-image', 'url(public/images/before_location.svg)');
+    if (chooseWay == "bus_nav") {
+        $("#bus_div").show();
+        $("#map_div").hide();
+        if ($('.bus_nav i').css('background-image').indexOf('bus2.svg') == -1) {
+            $('.bus_nav i').css('background-image', "url('public/images/bus2.svg')");
+        };
+        if ($('.car_nav i').css('background-image').indexOf('car1.svg') == -1) {
+            $('.car_nav i').css('background-image', "url('public/images/car1.svg')");
+        }
+        if ($('.walk_nav i').css('background-image').indexOf('walk1.svg') == -1) {
+            $('.walk_nav i').css('background-image', "url('public/images/walk1.svg')");
+        }
+        bus_route();
+    }
+    if (chooseWay == "car_nav") {
+        $("#bus_div").hide();
+        $("#map_div").show();
+        if ($('.bus_nav i').css('background-image').indexOf('bus1.svg') == -1) {
+            $('.bus_nav i').css('background-image', "url('public/images/bus1.svg')");
+        };
+        if ($('.car_nav i').css('background-image').indexOf('car2.svg') == -1) {
+            $('.car_nav i').css('background-image', "url('public/images/car2.svg')");
+        }
+        if ($('.walk_nav i').css('background-image').indexOf('walk1.svg') == -1) {
+            $('.walk_nav i').css('background-image', "url('public/images/walk1.svg')");
+        }
+        driving_route();
+    }
+    if (chooseWay == "walk_nav") {
+        $("#bus_div").hide();
+        $("#map_div").show();
+        if ($('.bus_nav i').css('background-image').indexOf('bus1.svg') == -1) {
+            $('.bus_nav i').css('background-image', "url('public/images/bus1.svg')");
+        };
+        if ($('.car_nav i').css('background-image').indexOf('car1.svg') == -1) {
+            $('.car_nav i').css('background-image', "url('public/images/car1.svg')");
+        }
+        if ($('.walk_nav i').css('background-image').indexOf('walk2.svg') == -1) {
+            $('.walk_nav i').css('background-image', "url('public/images/walk2.svg')");
+        }
+        walking_route();
+    }
+}
+</script>
+
+</html>

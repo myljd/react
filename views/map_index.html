@@ -1,0 +1,398 @@
+<!DOCTYPE HTML>
+<html style="height:100%;">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, minimal-ui" />
+    <link rel="stylesheet" type="text/css" href="/../css/map/map_mine.css">
+    <!-- <link rel="stylesheet" type="text/css" href="/../css/map.css"> -->
+    <title>景区导航</title>
+</head>
+<style type="text/css" rel="stylesheet">
+</style>
+
+<body>
+    <div id="map"></div>
+    <div class="map_zoom map_icon_shadow">
+        <a class="map_zoomin" onclick="mapIn()"></a>
+        <a class="map_zoomout" onclick="mapOut()"></a>
+    </div>
+    <div class="map_locate map_icon_shadow">
+        <a class="location_icon" onclick="getMyPosition()"></a>
+    </div>
+    <!-- <div class="map_mapinfo" style="bottom: 20px;"></div> -->
+    <div class="map_footer map_icon_shadow">
+        <div class="message_index_box" style="display:none">
+            <div class="message_left">
+                <div class="message_name">雷龙过山车</div>
+                <div class="message_dis">140米</div>
+            </div>
+            <div class="message_right" onclick="goDetails()">
+                <div class="message_pic"></div>
+                <div class="message_desc">详情</div>
+            </div>
+        </div>
+        <div class="map_font" style="width:100%;height:40px">
+            <div id="nav" class="float_div" style="width:23%">
+                <a onclick="nav();"><img id="nav_i" src="../../images/nav.svg" style="margin-bottom:-10px">导航</a>
+            </div>
+            <div class="float_div" id="near">
+                <a onclick="near();"><img id="near_i" src="../../images/near.svg">附近</a>
+            </div>
+            <div class="float_div" id="search">
+                <a onclick="map_search();"><img id="search_i" src="../../images/search.svg">搜索</a>
+            </div>
+            <div class="float_div" id="foot" style="width:27%">
+                <a onclick="foot();"><img id="foot_i" src="../../images/foot.svg">足迹</a>
+            </div>
+        </div>
+    </div>
+</body>
+<script language="javascript" src="http://webapi.amap.com/maps?v=1.3&key=6361c5941dd85706221ec5c515858cab"></script>
+<script src="/../js/jquery.min.js"></script>
+<script type="text/javascript" src="/../js/map/map_base.js"></script>
+<script type="text/javascript" src="/../js/map/map_lng_lat.js"></script>
+<script type="text/javascript">
+//参数处理
+var href = window.location.href.split("?");
+var paramList = href[1].split("=");
+localStorage.openId = paramList[1];
+var allProjectData="";
+getAllProject();
+flag = 0;
+getMyPosition();
+//清空缓存
+emptyLocalStorage();
+loadFeatures(features0);
+
+
+
+function getAllProject() {
+    $.ajax({
+        type: 'get',
+        url: '/map/getAllProject',
+        async: false,
+        success: function(result) {
+            allProjectData = result.data;
+            console.log(allProjectData);
+        }
+    })
+}
+
+function drawProject() {
+    console.log(allProjectData);
+    var feature2 = new Array();
+    for (var i = 0; i < allProjectData.length; i++) {
+        var feature = [{
+            flag: 2,
+            type: "Marker",
+            name: allProjectData[i].name,
+            desc: "",
+            color: "red",
+            icon: "cir",
+            offset: {
+                x: -9,
+                y: -31
+            },
+            lnglat: {
+                lng: allProjectData[i].location.longitude,
+                lat: allProjectData[i].location.latitude
+            }
+        }];
+        loadFeatures(feature);
+        feature2.push(feature);
+    }
+    
+}
+
+function emptyLocalStorage() {
+    localStorage.removeItem("lat_start");
+    localStorage.removeItem("lng_start");
+    localStorage.removeItem("cityCode_start");
+    localStorage.removeItem("lat_end");
+    localStorage.removeItem("lng_end");
+    localStorage.removeItem("cityCode_end");
+    localStorage.removeItem("lat_mine");
+    localStorage.removeItem("lng_mine");
+    localStorage.removeItem("cityCode_mine");
+    localStorage.removeItem("isInFeature");
+    localStorage.removeItem("text_start");
+    localStorage.removeItem("text_end");
+    localStorage.removeItem("navWay");
+}
+
+//解析定位结果
+function completeOnHtml(data) {
+    console.log(data)
+    $(".location_icon").css('background-image', 'url(/../images/after_location.svg)');
+    localStorage.lat_mine = data.position.lat;
+    localStorage.lng_mine = data.position.lng;
+    console.log(localStorage.lng_mine, localStorage.lat_mine);
+    var geocoder;
+    //加载地理编码插件 
+    map.plugin(["AMap.Geocoder"], function() {
+        geocoder = new AMap.Geocoder({
+            radius: 1000, //以已知坐标为中心点，radius为半径，返回范围内兴趣点和道路信息 
+            // extensions: "all"//返回地址描述以及附近兴趣点和道路信息，默认"base" 
+        });
+        //返回地理编码结果 
+        AMap.event.addListener(geocoder, "complete", geocoder_callBack);
+        //逆地理编码 
+        geocoder.getAddress(data.position);
+    });
+};
+
+function geocoder_callBack(data) { //回调函数
+    console.log(data);
+    localStorage.cityCode_mine = data.regeocode.addressComponent.citycode;
+
+}
+
+function goDetails() {
+    window.location.href = "http://dpins.breadtech.cn/#?nextUrl=facility&projectId=10&title=123";
+}
+
+// function showMessage() {
+//     $(".map_zoom").css("bottom", "90px");
+//     $(".map_locate").css("bottom", "90px");
+//     $(".message_box").css("display", "block");
+// }
+
+//导航
+function nav() {
+    window.location.href = "/map_nav";
+}
+//附近
+function near() {
+    window.location.href = "http://dpins.breadtech.cn/#?nextUrl=nearby&title=我的附近";
+}
+//搜索
+function map_search() {
+    window.location.href = "http://dpins.breadtech.cn/#?nextUrl=search&title=搜索";
+}
+//足迹
+function foot() {
+    window.location.href = "/map_footer";
+}
+
+
+// loadFeatures(features1);
+//－－－－－－－－－－－－－－－－搜索结果显示 start－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+if (localStorage.text != null && localStorage.text != '') {
+    //根据选择的输入提示关键字查询
+    map.plugin(["AMap.PlaceSearch"], function() {
+        var msearch = new AMap.PlaceSearch(); //构造地点查询类
+        AMap.event.addListener(msearch, "complete", placeSearch_CallBack); //查询成功时的回调函数
+        msearch.setCity(localStorage.cityCode);
+        msearch.search(localStorage.text); //关键字查询查询
+    });
+    console.log(localStorage.text);
+    console.log(localStorage.cityCode);
+
+    localStorage.cityCode_end = localStorage.cityCode;
+    setAllOffset("105");
+    $('.message_index_box').css("display", "block");
+    $('#nav_i').html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;到这去");
+
+
+    localStorage.removeItem("text");
+    localStorage.removeItem("cityCode");
+
+} else {
+    //定位
+    setAllOffset("60");
+}
+
+//输出关键字查询结果的回调函数
+function placeSearch_CallBack(data) {
+    //清空地图上的InfoWindow和Marker
+    var poiArr = data.poiList.pois;
+    for (var i = 0; i < poiArr.length; i++) {
+        addMarker(i, poiArr[i]);
+    }
+    $('.message_name').text(poiArr[0].name);
+    var dis = poiArr[0].distance.toString();
+    if (dis === NaN || dis === 'NaN') {
+        $('.message_dis').text(poiArr[0].address);
+    } else {
+        $('.message_dis').text(poiArr[0].distance.toString());
+    }
+    localStorage.lat_end = poiArr[0].location.lat;
+    localStorage.lng_end = poiArr[0].location.lng;
+
+
+    map.setFitView();
+}
+
+//添加查询结果的marker&infowindow   
+function addMarker(i, d) {
+    console.log(d);
+    var lngX = d.location.getLng();
+    var latY = d.location.getLat();
+    var markerOption = {
+        map: map,
+        icon: "http://webapi.amap.com/images/" + (i + 1) + ".png",
+        extData: d,
+        position: new AMap.LngLat(lngX, latY)
+    };
+    var mar = new AMap.Marker(markerOption);
+
+    AMap.event.addListener(mar, "click", clickMarker);
+}
+
+//鼠标滑过查询结果改变背景样式，根据id打开信息窗体
+function clickMarker(d) {
+    console.log(d);
+    $('.message_name').text(d.target.Rd.extData.name);
+    var dis = d.target.Rd.extData.distance.toString();
+    if (dis === NaN || dis === 'NaN') {
+        $('.message_dis').text(d.target.Rd.extData.address);
+    } else {
+        $('.message_dis').text(d.target.Rd.extData.distance);
+    }
+    localStorage.lat_end = d.target.Rd.extData.location.lat;
+    localStorage.lng_end = d.target.Rd.extData.location.lng;
+}
+
+function mapFeatureClick(d){
+    console.log(d);
+    $('.message_name').text(d.target.Rd.extData.name);
+    $('.message_dis').text(d.target.Rd.extData.name);
+    
+    localStorage.lat_end = d.target.Rd.extData.lnglat.lat;
+    localStorage.lng_end = d.target.Rd.extData.lnglat.lng;
+    localStorage.cityCode_end = "320411";
+    setAllOffset("105");
+    $('.message_index_box').css("display", "block");
+
+    $('#nav').html("<a onclick='nav();'><img id='nav_i' src='../../images/nav.svg' style='margin-bottom:-10px;'>导航</a>");
+
+}
+//－－－－－－－－－－－－－－－－搜索结果显示 end －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+
+
+
+// function getProjectInfo(id) {
+//     if (id != null) {
+//         $.ajax({
+//             type: 'post',
+//             url: '/map/getProjectInfo',
+//             data: {
+//                 id: id
+//             },
+//             success: function(result) {
+//                 drawProject(result.data);
+//             }
+//         })
+//     }
+// }
+
+
+// //--------------------------------自定义信息窗体 start---------------------------------------
+
+// //地图初始化时，在地图上添加一个marker标记,鼠标点击marker可弹出自定义的信息窗体
+// addMarker();
+// //添加marker标记
+// function addMarker() {
+//     map.clearMap();
+//     var marker = new AMap.Marker({
+//         map: map,
+//         //位置 
+//         position: new AMap.LngLat(116.443321, 39.909348),
+//         //复杂图标    
+//         icon: "http://webapi.amap.com/images/0.png"
+//     });
+//     //鼠标点击marker弹出自定义的信息窗体
+//     AMap.event.addListener(marker, 'click', function() {
+//         infoWindow.open(map, marker.getPosition());
+//     });
+// }
+// //实例化信息窗体
+// var infoWindow = new AMap.InfoWindow({
+//     isCustom: true, //使用自定义窗体
+//     content: createInfoWindow('方恒假日酒店&nbsp;&nbsp;<span style="font-size:11px;color:#F00;">价格:318</span>', "<img src='http://tpc.googlesyndication.com/simgad/5843493769827749134' style='position:relative;float:left;margin:0 5px 5px 0;'>地址：北京市朝阳区阜通东大街6号院3号楼 东北 8.3 公里<br/>电话：010 64733333<br/><a href='http://baike.baidu.com/view/6748574.htm'>详细信息</a>"),
+//     offset: new AMap.Pixel(16, -45) //-113, -140
+// });
+
+// //构建自定义信息窗体 
+// function createInfoWindow(title, content) {
+//     var info = document.createElement("div");
+//     info.className = "info";
+
+//     //可以通过下面的方式修改自定义窗体的宽高
+//     //info.style.width = "400px";
+
+//     // 定义顶部标题
+//     var top = document.createElement("div");
+//     var titleD = document.createElement("div");
+//     var closeX = document.createElement("img");
+//     top.className = "info-top";
+//     titleD.innerHTML = title;
+//     closeX.src = "http://webapi.amap.com/images/close2.gif";
+//     closeX.onclick = closeInfoWindow;
+
+//     top.appendChild(titleD);
+//     top.appendChild(closeX);
+//     info.appendChild(top);
+
+
+//     // 定义中部内容
+//     var middle = document.createElement("div");
+//     middle.className = "info-middle";
+//     middle.style.backgroundColor = 'white';
+//     middle.innerHTML = content;
+//     info.appendChild(middle);
+
+//     // 定义底部内容
+//     var bottom = document.createElement("div");
+//     bottom.className = "info-bottom";
+//     bottom.style.position = 'relative';
+//     bottom.style.top = '0px';
+//     bottom.style.margin = '0 auto';
+//     var sharp = document.createElement("img");
+//     sharp.src = "http://webapi.amap.com/images/sharp.png";
+//     bottom.appendChild(sharp);
+//     info.appendChild(bottom);
+//     return info;
+// }
+
+// //关闭信息窗体
+// function closeInfoWindow() {
+//     map.clearInfoWindow();
+// }
+// //--------------------------------自定义信息窗体   end---------------------------------------
+// placeSearch3();
+
+// //范围内搜索-矩形
+// function placeSearch3() {
+//     //map.clearMap();  
+//     var arr = new Array();
+//     var MSearch;
+//     //绘制矩形边框     
+//     arr.push(new AMap.LngLat("116.423321", "39.884055"));
+//     arr.push(new AMap.LngLat("116.473103", "39.884055"));
+//     arr.push(new AMap.LngLat("116.473103", "39.919348"));
+//     arr.push(new AMap.LngLat("116.423321", "39.919348"));
+//     var polygon = new AMap.Polygon({
+//         map: map,
+//         path: arr,
+//         strokeColor: "#0000ff",
+//         strokeOpacity: 0.2,
+//         strokeWeight: 3,
+//         fillColor: "#f5deb3",
+//         fillOpacity: 0.8
+//     });
+
+//     polygon.contains(new AMap.LngLat("116.443321", "39.909348"));
+
+//     // map.plugin(["AMap.PlaceSearch"], function() { //加载PlaceSearch服务插件        
+//     //     MSearch = new AMap.PlaceSearch({  
+//     //         pageSize: 8  
+//     //     }); //构造地点查询类  
+//     //     AMap.event.addListener(MSearch, "complete", Search_CallBack); //查询成功时的回调函数  
+//     //     MSearch.searchInBounds("酒店", new AMap.Bounds(arr[0], arr[2])); //范围查询  
+//     // });  
+// }
+</script>
+
+</html>
